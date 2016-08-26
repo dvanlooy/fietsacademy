@@ -2,6 +2,7 @@ package be.vdab.filters;
 
 import java.io.IOException;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.Filter;
@@ -17,6 +18,10 @@ import javax.servlet.annotation.WebFilter;
 public class JPAFilter implements Filter {
 	private static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("fietsacademy");
 
+	public static EntityManager getEntityManager() {
+		return entityManagerFactory.createEntityManager();
+		}
+	
 	public void destroy() {
 		entityManagerFactory.close();
 	}
