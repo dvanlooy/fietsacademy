@@ -3,13 +3,20 @@ package be.vdab.entities;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 import be.vdab.enums.Geslacht;
@@ -29,6 +36,11 @@ public class Docent implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private Geslacht geslacht;
 
+	@ElementCollection
+	@CollectionTable(name = "docentenbijnamen", joinColumns = @JoinColumn(name = "docentid"))
+	@Column(name = "Bijnaam")
+	private Set<String> bijnamen;
+
 	/*
 	 * constructors
 	 */
@@ -38,21 +50,20 @@ public class Docent implements Serializable {
 		setWedde(wedde);
 		setGeslacht(geslacht);
 		setRijksRegisterNr(rijksRegisterNr);
+		bijnamen = new HashSet<>();
 	}
 
 	protected Docent() {
 	}// default constructor is vereiste voor JPA
-	
+
 	/*
 	 * functional methods
 	 */
 	public void opslag(BigDecimal percentage) {
-		BigDecimal factor =
-		BigDecimal.ONE.add(percentage.divide(BigDecimal.valueOf(100)));
+		BigDecimal factor = BigDecimal.ONE.add(percentage.divide(BigDecimal.valueOf(100)));
 		wedde = wedde.multiply(factor).setScale(2, RoundingMode.HALF_UP);
-		}
+	}
 
-	
 	/*
 	 * controle methods
 	 */
@@ -75,8 +86,7 @@ public class Docent implements Serializable {
 		}
 		return rijksRegisterNr % 100 == 97 - getal % 97;
 	}
-	
-	
+
 	/*
 	 * getters en setters
 	 */
@@ -140,7 +150,19 @@ public class Docent implements Serializable {
 		this.geslacht = geslacht;
 	}
 
+	public Set<String> getBijnamen() {
+		return Collections.unmodifiableSet(bijnamen);
+	}
+
 	public String getNaam() {
 		return voornaam + ' ' + familienaam;
+	}
+
+	public void addBijnaam(String bijnaam) {
+		bijnamen.add(bijnaam);
+	}
+
+	public void removeBijnaam(String bijnaam) {
+		bijnamen.remove(bijnaam);
 	}
 }

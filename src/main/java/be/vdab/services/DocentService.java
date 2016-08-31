@@ -94,4 +94,19 @@ public class DocentService extends AbstractService {
 		docentRepository.algemeneOpslag(factor);
 		commit();
 	}
+
+	public void bijnaamToevoegen(long id, String bijnaam) {
+		beginTransaction();
+		docentRepository.read(id).addBijnaam(bijnaam);
+		commit();
+	}
+
+	public void bijnamenVerwijderen(long id, String[] bijnamen) {
+		beginTransaction();
+		Docent docent = docentRepository.read(id);
+		for (String bijnaam : bijnamen) {
+			docent.removeBijnaam(bijnaam);
+		}
+		commit();
+	}
 }
