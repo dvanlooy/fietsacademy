@@ -12,11 +12,15 @@ public class CampusService extends AbstractService {
 		return campusRepository.findByGemeente(gemeente);
 	}
 
-	public List<Campus> findAll() { // voor later in de cursus
+	public List<Campus> findAll() { 
 		return campusRepository.findAll();
 	}
+	
+	public List<String> findAllLocations() { 
+		return campusRepository.findAllLocations();
+	}
 
-	public Campus read(long id) { // voor later in de cursus
+	public Campus read(long id) { 
 		return campusRepository.read(id);
 	}
 }

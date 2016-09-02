@@ -13,10 +13,12 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import be.vdab.enums.Geslacht;
@@ -41,6 +43,10 @@ public class Docent implements Serializable {
 	@Column(name = "Bijnaam")
 	private Set<String> bijnamen;
 
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "campusid")
+	private Campus campus;
+
 	/*
 	 * constructors
 	 */
@@ -62,6 +68,14 @@ public class Docent implements Serializable {
 	public void opslag(BigDecimal percentage) {
 		BigDecimal factor = BigDecimal.ONE.add(percentage.divide(BigDecimal.valueOf(100)));
 		wedde = wedde.multiply(factor).setScale(2, RoundingMode.HALF_UP);
+	}
+
+	public void addBijnaam(String bijnaam) {
+		bijnamen.add(bijnaam);
+	}
+
+	public void removeBijnaam(String bijnaam) {
+		bijnamen.remove(bijnaam);
 	}
 
 	/*
@@ -158,11 +172,13 @@ public class Docent implements Serializable {
 		return voornaam + ' ' + familienaam;
 	}
 
-	public void addBijnaam(String bijnaam) {
-		bijnamen.add(bijnaam);
+	public Campus getCampus() {
+		return campus;
 	}
 
-	public void removeBijnaam(String bijnaam) {
-		bijnamen.remove(bijnaam);
+	public void setCampus(Campus campus) {
+		this.campus = campus;
 	}
+	
+
 }

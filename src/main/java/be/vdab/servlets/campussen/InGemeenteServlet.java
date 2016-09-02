@@ -2,6 +2,7 @@ package be.vdab.servlets.campussen;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,6 +22,8 @@ public class InGemeenteServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String gemeente = request.getParameter("gemeente");
+		List <String> locations = campusService.findAllLocations();
+		request.setAttribute("locations", locations);
 		if (gemeente != null) {
 			if (gemeente.isEmpty()) {
 				request.setAttribute("fouten", Collections.singletonMap("gemeente", "verplicht"));
