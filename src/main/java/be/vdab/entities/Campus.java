@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
@@ -23,27 +24,32 @@ import be.vdab.valueobjects.TelefoonNr;
 @Table(name = "campussen")
 public class Campus implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	
+
 	private String naam;
-	
+
 	@Embedded
 	private Adres adres;
-	
+
 	@ElementCollection
 	@CollectionTable(name = "campussentelefoonnrs", joinColumns = @JoinColumn(name = "campusid"))
 	@OrderBy("fax")
 	private Set<TelefoonNr> telefoonNrs;
 
+	@OneToMany(mappedBy = "campus")
+	@OrderBy("voornaam, familienaam")
+	private Set<Docent> docenten;
+
 	public Campus(String naam, Adres adres) {
 		setNaam(naam);
 		setAdres(adres);
 		telefoonNrs = new LinkedHashSet<>();
+		docenten = new LinkedHashSet<>();
 	}
-	
+
 	public long getId() {
 		return id;
 	}
@@ -74,6 +80,26 @@ public class Campus implements Serializable {
 
 	public void remove(TelefoonNr telefoonNr) {
 		telefoonNrs.remove(telefoonNr);
+	}
+
+	public Set<Docent> getDocenten() {
+		return Collections.unmodifiableSet(docenten);
+	}
+
+	public void add(Docent docent) {
+		docenten.add(docent);
+		if (docent.getCampus() != this) { // als de andere kant nog niet
+											// bijgewerkt is
+			docent.setCampus(this); // werk je de andere kant bij
+		}
+	}
+
+	public void remove(Docent docent) {
+		docenten.remove(docent);
+		if (docent.getCampus() == this) { // als de andere kant nog niet
+											// bijgewerkt is
+			docent.setCampus(null); // werk je de andere kant bij
+		}
 	}
 
 	protected Campus() {

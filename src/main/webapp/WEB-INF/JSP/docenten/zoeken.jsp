@@ -30,7 +30,8 @@ Docent niet gevonden
 								name='bijnaam' value='${bijnaam}'></label></li>
 					</c:forEach>
 				</ul>
-				<input type='submit' value='Bijnamen verwijderen' name='verwijderen'></form>
+				<input type='submit' value='Bijnamen verwijderen' name='verwijderen'>
+			</form>
 		</c:if>
 		<form method='post' id='toevoegform'>
 			<label>Bijnaam: <span>${fouten.bijnaam}</span> <input
@@ -42,6 +43,15 @@ Docent niet gevonden
 				document.getElementById('toevoegknop').disabled = true;
 			};
 		</script>
+		<c:if test='${not empty docent.verantwoordelijkheden}'>
+			<h2>Verantwoordelijkheden</h2>
+			<ul>
+				<c:forEach items='${docent.verantwoordelijkheden}'
+					var='verantwoordelijkheid'>
+					<li>${verantwoordelijkheid.naam}</li>
+				</c:forEach>
+			</ul>
+		</c:if>
 		<h2>Acties</h2>
 		<c:url value='/docenten/verwijderen.htm' var='verwijderURL'>
 			<c:param name='id' value='${docent.id}' />

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import be.vdab.entities.Docent;
+import be.vdab.exceptions.DocentBestaatAlException;
 import be.vdab.repositories.DocentRepository;
 import be.vdab.valueobjects.AantalDocentenPerWedde;
 import be.vdab.valueobjects.VoornaamEnId;
@@ -33,6 +34,9 @@ public class DocentService extends AbstractService {
 		// } finally {
 		// entityManager.close();
 		// }
+		if (docentRepository.findByRijksRegisterNr(docent.getRijksRegisterNr()) != null) {
+			throw new DocentBestaatAlException();
+		}
 		beginTransaction();
 		docentRepository.create(docent);
 		commit();
