@@ -9,11 +9,13 @@ import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
@@ -42,6 +44,10 @@ public class Campus implements Serializable {
 	@OneToMany(mappedBy = "campus")
 	@OrderBy("voornaam, familienaam")
 	private Set<Docent> docenten;
+
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "managerid")
+	private Manager manager;
 
 	public Campus(String naam, Adres adres) {
 		setNaam(naam);
@@ -100,6 +106,10 @@ public class Campus implements Serializable {
 											// bijgewerkt is
 			docent.setCampus(null); // werk je de andere kant bij
 		}
+	}
+
+	public Manager getManager() {
+		return manager;
 	}
 
 	protected Campus() {

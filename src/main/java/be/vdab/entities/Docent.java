@@ -21,6 +21,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedEntityGraphs;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.Table;
 
 import be.vdab.enums.Geslacht;
@@ -28,6 +32,11 @@ import be.vdab.enums.Geslacht;
 @Entity
 @Table(name = "docenten")
 
+@NamedEntityGraphs({
+	@NamedEntityGraph(name = "Docent.MET_CAMPUS", attributeNodes = @NamedAttributeNode("campus")),
+	@NamedEntityGraph(name = "Docent.metCampusEnVerantwoordelijkheden", attributeNodes = { @NamedAttributeNode("campus"), @NamedAttributeNode("verantwoordelijkheden") }),
+	@NamedEntityGraph(name = "Docent.metCampusEnManager", attributeNodes = @NamedAttributeNode(value = "campus", subgraph = "metManager"), subgraphs = @NamedSubgraph(name = "metManager", attributeNodes = @NamedAttributeNode("manager")))
+})
 public class Docent implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -48,6 +57,8 @@ public class Docent implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "campusid")
 	private Campus campus;
+	
+	public static final String MET_CAMPUS = "Docent.metCampus";
 
 	/*
 	 * constructors

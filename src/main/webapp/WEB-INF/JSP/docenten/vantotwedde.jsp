@@ -19,8 +19,9 @@ td:first-child, td:last-child {
 		<label>Van:<span>${fouten.van}</span> <input name='van'
 			value='${param.van}' type='number' min='0' step='0.01' required
 			autofocus></label> <label>Tot:<span>${fouten.tot}</span> <input
-			name='tot' type='number' value='${empty tot ? param.tot : tot}' min='0' step='0.01'
-			required></label> <input type='submit' value='Zoeken'>
+			name='tot' type='number' value='${empty tot ? param.tot : tot}'
+			min='0' step='0.01' required></label> <input type='submit'
+			value='Zoeken'>
 	</form>
 	<c:if test="${not empty param and empty fouten and empty docenten}">
 		Geen docenten gevonden
@@ -32,6 +33,7 @@ td:first-child, td:last-child {
 					<th>Nummer</th>
 					<th>Naam</th>
 					<th>Wedde</th>
+					<th>Campus</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -41,6 +43,7 @@ td:first-child, td:last-child {
 						<td>${docent.naam}</td>
 						<td><fmt:formatNumber value='${docent.wedde}'
 								minFractionDigits='2' maxFractionDigits='2' /></td>
+						<td>${docent.campus.naam}</td>
 					</tr>
 				</c:forEach>
 			</tbody>
