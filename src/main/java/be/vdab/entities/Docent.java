@@ -3,6 +3,7 @@ package be.vdab.entities;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -26,6 +27,7 @@ import javax.persistence.NamedEntityGraph;
 import javax.persistence.NamedEntityGraphs;
 import javax.persistence.NamedSubgraph;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import be.vdab.enums.Geslacht;
 
@@ -57,6 +59,9 @@ public class Docent implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "campusid")
 	private Campus campus;
+	
+	@Version 
+	private Timestamp versie;
 	
 	public static final String MET_CAMPUS = "Docent.metCampus";
 

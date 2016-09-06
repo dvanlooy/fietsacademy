@@ -3,8 +3,12 @@ package be.vdab.services;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.persistence.OptimisticLockException;
+import javax.persistence.RollbackException;
+
 import be.vdab.entities.Docent;
 import be.vdab.exceptions.DocentBestaatAlException;
+import be.vdab.exceptions.RecordAangepastException;
 import be.vdab.repositories.CampusRepository;
 import be.vdab.repositories.DocentRepository;
 import be.vdab.valueobjects.AantalDocentenPerWedde;
@@ -61,21 +65,34 @@ public class DocentService extends AbstractService {
 		commit();
 	}
 
+	// public void opslag(long id, BigDecimal percentage) {
+	// // EntityManager entityManager = JPAFilter.getEntityManager();
+	// // try {
+	// // entityManager.getTransaction().begin();
+	// // docentRepository.read(id, entityManager).opslag(percentage);
+	// // entityManager.getTransaction().commit();
+	// // } catch (RuntimeException ex) {
+	// // entityManager.getTransaction().rollback();
+	// // throw ex;
+	// // } finally {
+	// // entityManager.close();
+	// // }
+	// beginTransaction();
+	//// docentRepository.read(id).opslag(percentage);
+	// docentRepository.readWithLock(id).opslag(percentage);
+	// commit();
+	// }
+
 	public void opslag(long id, BigDecimal percentage) {
-		// EntityManager entityManager = JPAFilter.getEntityManager();
-		// try {
-		// entityManager.getTransaction().begin();
-		// docentRepository.read(id, entityManager).opslag(percentage);
-		// entityManager.getTransaction().commit();
-		// } catch (RuntimeException ex) {
-		// entityManager.getTransaction().rollback();
-		// throw ex;
-		// } finally {
-		// entityManager.close();
-		// }
 		beginTransaction();
 		docentRepository.read(id).opslag(percentage);
-		commit();
+		try {
+			commit();
+		} catch (RollbackException ex) {
+			if (ex.getCause() instanceof OptimisticLockException) {
+				throw new RecordAangepastException();
+			}
+		}
 	}
 
 	public List<Docent> findByWeddeBetween(BigDecimal van, BigDecimal tot, int vanafRij, int aantalRijen) {
